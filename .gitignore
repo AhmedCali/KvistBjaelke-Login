@@ -424,5 +424,16 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
+# Rider
+.idea/
+
+# SQLite-database (WAL-filer følger med)
+*.db
+*.db-shm
+*.db-wal
+
+# Frontend-build
+dist/
+
 # Official VS Code C# Dev Kit Extension exclusion
 #*.lscache
