@@ -1,6 +1,13 @@
-@LoginApi_HostAddress = http://localhost:5188
+@host = http://localhost:5188
 
-GET {{LoginApi_HostAddress}}/weatherforecast/
-Accept: application/json
+### Opret bruger
+POST {{host}}/api/register
+Content-Type: application/json
 
-###
+{ "username": "test", "password": "test1234" }
+
+### Log ind
+POST {{host}}/api/login
+Content-Type: application/json
+
+{ "username": "test", "password": "test1234" }
