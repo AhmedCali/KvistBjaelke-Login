@@ -1,13 +1,25 @@
 @host = http://localhost:5188
 
-### Opret bruger
-POST {{host}}/api/register
+### Register a new user
+POST {{host}}/api/auth/register
 Content-Type: application/json
 
 { "username": "test", "password": "test1234" }
 
-### Log ind
-POST {{host}}/api/login
+### Log in as a new user
+POST {{host}}/api/auth/login
 Content-Type: application/json
 
 { "username": "test", "password": "test1234" }
+
+### Log in as admin (seeded)
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "username": "admin", "password": "Admin123!" }
+
+### Wrong Password (should fail)
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "username": "admin", "password": "WRONG!" }
