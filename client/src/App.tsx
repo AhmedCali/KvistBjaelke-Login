@@ -3,6 +3,7 @@ import "./index.css";
 import { useState, type FormEvent } from "react";
 import type { LoginRequest} from "./models/login-request";
 import { useAuth } from "./auth/AuthProvider";
+import { UsersTable } from "./users/UsersTable";
 
 export function App() {
     const { token, login, logout } = useAuth();
@@ -64,6 +65,7 @@ export function App() {
                     {error && <p role="alert">{error}</p>}
                 </form>
             )}
+            <UsersTable myRole="admin" />
         </div>
     );
 }
