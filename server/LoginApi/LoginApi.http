@@ -38,3 +38,41 @@ Content-Type: application/json
 ### Hent brugere med token (skal give liste med 3 brugere)
 GET {{host}}/api/users
 Authorization: Bearer {{token}}
+
+### Som user: opret bruger (skal give 403)
+POST {{host}}/api/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "username": "nytest", "password": "Test12345", "role": "user" }
+
+### Log ind som admin og gem token
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "username": "admin", "password": "Admin123!" }
+
+> {% client.global.set("token", response.body.token); %}
+
+### Som admin: opret bruger (skal give 201)
+POST {{host}}/api/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "username": "testbruger", "password": "Test12345", "role": "user" }
+
+### Log ind som superuser og gem token
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "username": "superuser", "password": "Super123!" }
+
+> {% client.global.set("token", response.body.token); %}
+
+### Som superuser: slet admin, id 1 (skal give 403)
+DELETE {{host}}/api/users/1
+Authorization: Bearer {{token}}
+
+### Som superuser: slet testbruger, id 4 (skal give 204)
+DELETE {{host}}/api/users/4
+Authorization: Bearer {{token}}
