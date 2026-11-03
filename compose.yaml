@@ -1,6 +1,8 @@
 services:
   server:
     build: ./server
+    environment:
+        Jwt__Key: ${JWT_KEY}
 
   client:
     build: ./client

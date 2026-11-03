@@ -21,7 +21,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async function login(request: LoginRequest) {
         let response: Response;
         try {
-            response = await fetch("/api/login", {
+            response = await fetch("/api/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(request),
