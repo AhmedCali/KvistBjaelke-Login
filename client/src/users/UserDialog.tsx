@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
+import { Modal } from "../components/Modal";
 import type { Role, User } from "../models/user";
 
 export interface UserFormData {
@@ -15,7 +16,6 @@ interface Props {
 }
 
 export function UserDialog({ user, myRole, onSave, onClose }: Props) {
-    const dialogRef = useRef<HTMLDialogElement>(null);
     const [username, setUsername] = useState(user?.username ?? "");
     const [password, setPassword] = useState("");
     const [role, setRole] = useState<Role>(user?.role ?? "user");
@@ -23,10 +23,6 @@ export function UserDialog({ user, myRole, onSave, onClose }: Props) {
 
     const isEdit = user !== null;
     const roleOptions: Role[] = myRole === "admin" ? ["user", "superuser", "admin"] : ["user"];
-
-    useEffect(() => {
-        dialogRef.current?.showModal();
-    }, []);
 
     function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -48,44 +44,57 @@ export function UserDialog({ user, myRole, onSave, onClose }: Props) {
     }
 
     return (
-        <dialog ref={dialogRef} onClose={onClose}>
-            <form onSubmit={handleSubmit}>
-                <h3>{isEdit ? "Rediger bruger" : "Opret bruger"}</h3>
+        <Modal title={isEdit ? "Rediger bruger" : "Opret bruger"} onClose={onClose}>
+            <form className="form" onSubmit={handleSubmit}>
+                <div className="field">
+                    <label htmlFor="dlg-username">Brugernavn</label>
+                    <input
+                        id="dlg-username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                </div>
 
-                <label htmlFor="dlg-username">Brugernavn</label>
-                <input
-                    id="dlg-username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                />
+                <div className="field">
+                    <label htmlFor="dlg-password">Adgangskode</label>
+                    <input
+                        id="dlg-password"
+                        type="password"
+                        autoComplete="new-password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <span className="hint">
+                        {isEdit ? "Lad feltet stå tomt for at beholde den nuværende." : "Mindst 8 tegn."}
+                    </span>
+                </div>
 
-                <label htmlFor="dlg-password">Adgangskode</label>
-                <input
-                    id="dlg-password"
-                    type="password"
-                    value={password}
-                    placeholder={isEdit ? "Lad stå tom for at beholde" : ""}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
+                <div className="field">
+                    <label htmlFor="dlg-role">Rolle</label>
+                    <select
+                        id="dlg-role"
+                        value={role}
+                        onChange={(e) => setRole(e.target.value as Role)}
+                        disabled={roleOptions.length === 1}
+                    >
+                        {roleOptions.map((r) => (
+                            <option key={r} value={r}>{r}</option>
+                        ))}
+                    </select>
+                    {roleOptions.length === 1 && (
+                        <span className="hint">Som superuser kan du kun administrere almindelige brugere.</span>
+                    )}
+                </div>
 
-                <label htmlFor="dlg-role">Rolle</label>
-                <select
-                    id="dlg-role"
-                    value={role}
-                    onChange={(e) => setRole(e.target.value as Role)}
-                >
-                    {roleOptions.map((r) => (
-                        <option key={r} value={r}>{r}</option>
-                    ))}
-                </select>
+                {error && <div className="alert alert-error" role="alert">{error}</div>}
 
-                {error && <p role="alert">{error}</p>}
-
-                <div>
-                    <button type="button" onClick={onClose}>Annuller</button>
-                    <button type="submit">Gem</button>
+                <div className="modal-actions">
+                    <button type="button" className="btn btn-secondary" onClick={onClose}>Annuller</button>
+                    <button type="submit" className="btn btn-primary">
+                        {isEdit ? "Gem ændringer" : "Opret bruger"}
+                    </button>
                 </div>
             </form>
-        </dialog>
+        </Modal>
     );
 }

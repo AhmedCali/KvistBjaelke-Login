@@ -1,17 +1,25 @@
 import { serve } from "bun";
 import index from "./index.html";
 
+// Hvor .NET-API'et kører under udvikling (dotnet run)
+const API_URL = process.env.API_URL ?? "http://localhost:5188";
+
 const server = serve({
   routes: {
-    // Serve index.html for all unmatched routes.
+    // api-kald videre til backend med bun dev
+    "/api/*": (req) => {
+      const url = new URL(req.url);
+      return fetch(API_URL + url.pathname + url.search, {
+        method: req.method,
+        headers: req.headers,
+        body: req.body,
+      });
+    },
     "/*": index,
   },
 
   development: process.env.NODE_ENV !== "production" && {
-    // Enable browser hot reloading in development
     hmr: true,
-
-    // Echo console logs from the browser to the server
     console: true,
   },
 });
