@@ -1,4 +1,4 @@
-@host = http://localhost:5188
+@host = http://localhost:8080
 
 ### Register a new user
 POST {{host}}/api/auth/register
@@ -23,3 +23,18 @@ POST {{host}}/api/auth/login
 Content-Type: application/json
 
 { "username": "admin", "password": "WRONG!" }
+
+### Hent brugere uden token (skal give 401)
+GET {{host}}/api/users
+
+### Log ind som user og gem token
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "username": "user", "password": "User1234!" }
+
+> {% client.global.set("token", response.body.token); %}
+
+### Hent brugere med token (skal give liste med 3 brugere)
+GET {{host}}/api/users
+Authorization: Bearer {{token}}
