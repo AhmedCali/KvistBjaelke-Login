@@ -73,6 +73,20 @@ Content-Type: application/json
 DELETE {{host}}/api/users/1
 Authorization: Bearer {{token}}
 
-### Som superuser: slet testbruger, id 4 (skal give 204)
+### Som superuser: slet en almindelig bruger, id 4 (skal give 204)
 DELETE {{host}}/api/users/4
 Authorization: Bearer {{token}}
+
+### Som superuser: gør user til admin (skal give 403)
+PUT {{host}}/api/users/3
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "role": "admin" }
+
+### Som superuser: skift navn på en almindelig bruger (skal give 204)
+PUT {{host}}/api/users/4
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "username": "omdoebt" }
