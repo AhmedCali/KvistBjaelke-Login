@@ -459,3 +459,7 @@ h2 {
     align-items: flex-start;
   }
 }
+
+.card-message {
+  padding: 1.25rem;
+}

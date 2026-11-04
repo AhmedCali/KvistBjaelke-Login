@@ -34,7 +34,7 @@ export function UsersPage() {
                     <p className="muted">{roleDescriptions[session.role]}</p>
                 </div>
 
-                <UsersTable myRole={session.role} myUsername={session.username} />
+                <UsersTable token={session.token} myRole={session.role} myUsername={session.username} />
             </main>
         </div>
     );

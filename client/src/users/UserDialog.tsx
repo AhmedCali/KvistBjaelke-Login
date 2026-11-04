@@ -11,7 +11,7 @@ export interface UserFormData {
 interface Props {
     user: User | null;
     myRole: Role;
-    onSave: (data: UserFormData) => void;
+    onSave: (data: UserFormData) => Promise<void>;
     onClose: () => void;
 }
 
@@ -20,11 +20,12 @@ export function UserDialog({ user, myRole, onSave, onClose }: Props) {
     const [password, setPassword] = useState("");
     const [role, setRole] = useState<Role>(user?.role ?? "user");
     const [error, setError] = useState<string | null>(null);
+    const [saving, setSaving] = useState(false);
 
     const isEdit = user !== null;
     const roleOptions: Role[] = myRole === "admin" ? ["user", "superuser", "admin"] : ["user"];
 
-    function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
         if (username.trim().length < 3) {
@@ -40,7 +41,15 @@ export function UserDialog({ user, myRole, onSave, onClose }: Props) {
             return;
         }
 
-        onSave({ username: username.trim(), password, role });
+        setError(null);
+        setSaving(true);
+        try {
+            await onSave({ username: username.trim(), password, role });
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Noget gik galt.");
+        } finally {
+            setSaving(false);
+        }
     }
 
     return (
@@ -90,8 +99,8 @@ export function UserDialog({ user, myRole, onSave, onClose }: Props) {
 
                 <div className="modal-actions">
                     <button type="button" className="btn btn-secondary" onClick={onClose}>Annuller</button>
-                    <button type="submit" className="btn btn-primary">
-                        {isEdit ? "Gem ændringer" : "Opret bruger"}
+                    <button type="submit" className="btn btn-primary" disabled={saving}>
+                        {saving ? "Gemmer..." : isEdit ? "Gem ændringer" : "Opret bruger"}
                     </button>
                 </div>
             </form>
